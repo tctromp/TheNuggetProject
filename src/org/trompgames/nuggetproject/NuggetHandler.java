@@ -1,9 +1,9 @@
 package org.trompgames.nuggetproject;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -20,11 +20,51 @@ public class NuggetHandler extends GameHandler{
 	private BufferedImage image;
 	private Vector2 imageScale;
 	
+	private File folder;
+	private ArrayList<File> images = new ArrayList<File>();
+	private int imageIndex = 0;
+	
+	public String getFolderName(){
+		return folder.getName();
+	}
+	
+	public int getImageIndex(){
+		return imageIndex;
+	}
+	
+	public String getAllPixels(){
+		
+		String s = "";
+		
+		int i = 0;
+		int last = -101010;
+		while(i < images.size() + 1){
+			
+			if(!nuggetPanel.isPainting() && nuggetPanel.getPixels() != last){
+			
+				s += nuggetPanel.getPixels() + "\n";
+				nextPicture();
+				i++;
+				System.out.println(i);
+			}		
+			System.out.println(i);
+		}
+		
+		return s;
+	}
+	
 	public NuggetHandler() {
 		super(60, 20, true);		
 		
-		this.LoadFile(new File("F:/Users/Thomas/Downloads/IMG_20170410_161851.jpg"));
-		this.scaleImage(new Vector2(image.getWidth()/4, image.getHeight()/4));
+		folder = new File("C:\\Users\\Thomas\\Desktop\\Nuggets\\Monterey");
+		
+		
+		for(File file : folder.listFiles()){
+			images.add(file);
+		}
+		
+		this.LoadFile(images.get(0));
+		//this.scaleImage(new Vector2(image.getWidth()/4, image.getHeight()/4));
 		
 		nuggetFrame = new NuggetFrame(this);
 		nuggetPanel = nuggetFrame.getNuggetPanel();	
@@ -39,6 +79,26 @@ public class NuggetHandler extends GameHandler{
 			return false;
 		}	
 	}
+	
+	public void nextPicture(){
+		imageIndex++;
+		if(imageIndex >= images.size()) imageIndex = images.size()-1;
+				
+		this.LoadFile(images.get(imageIndex));
+		
+		nuggetFrame.repaint();
+		
+	}
+	
+	public void prevPicture(){
+		imageIndex--;
+		if(imageIndex < 0 ) imageIndex = 0;
+				
+		this.LoadFile(images.get(imageIndex));
+		
+		nuggetFrame.repaint();
+	}
+	
 	
 	public BufferedImage getImage(){
 		return image;
@@ -57,7 +117,8 @@ public class NuggetHandler extends GameHandler{
 		
 		Vector2 v = currLoc.sub(prevLoc);
 		imageOffset = imageOffset.add(v);
-		
+		nuggetPanel.repaint();
+
 		
 	}
 	
@@ -73,11 +134,15 @@ public class NuggetHandler extends GameHandler{
 	public Vector2 getImageOffset(){
 		return imageOffset;
 	}
+	
+	public void setImageOffset(Vector2 v){
+		this.imageOffset = v;
+	}
 
 	@Override
 	public void update(double deltaTime) {
 		if(nuggetPanel == null) return;
-		nuggetPanel.repaint();
+		//nuggetPanel.repaint();
 	}
 
 	@Override

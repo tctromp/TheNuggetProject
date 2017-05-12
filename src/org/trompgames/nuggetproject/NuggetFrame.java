@@ -2,6 +2,8 @@ package org.trompgames.nuggetproject;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -24,8 +26,10 @@ public class NuggetFrame extends JFrame{
 		
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();		
 		
-		this.setSize((int) d.getWidth()/2, (int) d.getHeight()/2);
-		this.setLocation((int) d.getWidth()/4, (int) d.getHeight()/4);
+		//this.setSize((int) d.getWidth()/2, (int) d.getHeight()/2);
+		this.setSize((int) d.getWidth(), (int) d.getHeight());
+
+		//this.setLocation((int) d.getWidth()/4, (int) d.getHeight()/4);
 	
 		
 		nuggetPanel = new NuggetPanel(handler);
@@ -35,9 +39,49 @@ public class NuggetFrame extends JFrame{
 		
 		addMouseDragListener();
 		addMouseListener();
+		addKeyListener();
 		
+		//this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//this.setUndecorated(true);
 		
 		this.setVisible(true);			
+	}
+	
+	
+	
+	public void addKeyListener(){
+		
+		
+		this.addKeyListener(new KeyListener(){
+
+			@Override
+			public void keyPressed(KeyEvent event) {
+				// TODO Auto-generated method stub
+				//System.out.println(event.getKeyCode());
+				
+				if(event.getKeyCode() == 65){ //a
+					//load prev
+					handler.prevPicture();
+				}else if(event.getKeyCode() == 68){ //d
+					//load next
+					handler.nextPicture();
+				}
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// TODO Auto-generated method stub
+			}
+			
+		});
+		
 	}
 	
 	public void addMouseListener(){
